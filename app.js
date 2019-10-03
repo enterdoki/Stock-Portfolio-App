@@ -3,9 +3,11 @@ const express = require('express');
 const cors = require('cors');
 const port = process.env.PORT || 3000;
 const app = express();
-const db = require('./database/db')
+const db = require('./database/db');
+const router = require('./routes/index');
 
 app.use(cors());
+app.use('/', router);
 
 app.get('/', (req, res, next) => {
     res.status(200).send("Default API route.");
