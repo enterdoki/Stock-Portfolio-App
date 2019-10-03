@@ -5,13 +5,15 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../database/models/user')
 
+signin.use(bodyParser.json());
+
 signin.get('*', (req, res, next) => {
     res.status(200).send('This is the default sign in route. Please try a different HTTP method.');
 })
 
 signin.post('/', async(req, res, next) => {
     try {
-        const user = await User.findOne({ where: { email:req.body.email }});
+        const user = await User.findOne({ where: {email:req.body.email}});
         if(user) {
             if (bcrypt.compareSync(req.body.password, user.password)) {
                 let payload = { id: user.id };
