@@ -26,6 +26,11 @@ const User = db.define('user', {
         allowNull: false,
         required:true,
         len: [2,20]
+    },
+    balance: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        required: true
     } 
 },{
     timestamps:false

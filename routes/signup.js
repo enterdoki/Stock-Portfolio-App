@@ -17,7 +17,8 @@ signup.post('/', async(req, res, next) => {
             firstname: req.body.firstname,
             lastname: req.body.lastname,
             email: req.body.email,
-            password: hash_password
+            password: hash_password,
+            balance: 5000
         });
         res.status(201).send(new_user);
     } catch(err) {
