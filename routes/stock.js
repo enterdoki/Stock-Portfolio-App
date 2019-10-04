@@ -26,16 +26,16 @@ const getSymbol = async (symbol) => {
     }
 }
 
-function checkSignIn(req, res, next) {
-    if (req.session.user) {
-        next();     //If session exists, proceed to page
-    } else {
-        res.status(401).send('Unauthorized user.')
-        next();  //Error, trying to access unauthorized page!
-    }
-}
+// function checkSignIn(req, res, next) {
+//     if (req.session.user) {
+//         next();     //If session exists, proceed to page
+//     } else {
+//         res.status(401).send('Unauthorized user.')
+//         next();  //Error, trying to access unauthorized page!
+//     }
+// }
 
-stock.get('/:symbol', checkSignIn, async (req, res, next) => {
+stock.get('/:symbol', async (req, res, next) => {
     let symbol = req.params.symbol;
     try {
         let { data } = await axios.get(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${api_key}`);
