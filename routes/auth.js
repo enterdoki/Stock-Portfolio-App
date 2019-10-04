@@ -23,7 +23,7 @@ auth.post('/login', async (req, res, next) => {
         if (user) {
             if (bcrypt.compareSync(req.body.password, user.password)) {
                 let payload = { email: user.email };
-                let token = jwt.sign(user.toObject(), 'stockAPI');
+                let token = jwt.sign(payload, 'stockAPI');
                 req.session.user = user;
                 res.status(200).send({ user, token });
             } else {
