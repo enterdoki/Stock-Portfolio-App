@@ -15,35 +15,34 @@ stock.use(session({
 }));
 
 // Heavy weight data, don't use for now.
-const getSymbol = async(symbol) => {
+const getSymbol = async (symbol) => {
     try {
-        let {data} = await axios.get(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&outputsize=compact&apikey=${api_key}`);
+        let { data } = await axios.get(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&outputsize=compact&apikey=${api_key}`);
         if (data[`Error Message`]) return 'Invalid Symbol.';
-        else 
+        else
             return Object.values(data['Time Series (Daily)'])[0];
-    }catch(err) {
+    } catch (err) {
         return err;
     }
 }
 
-function checkSignIn(req, res, next){
-    if(req.session.user){
-       next();     //If session exists, proceed to page
+function checkSignIn(req, res, next) {
+    if (req.session.user) {
+        next();     //If session exists, proceed to page
     } else {
-       var err = new Error("Not logged in!");
-       console.log(req.session.user);
-       next(err);  //Error, trying to access unauthorized page!
+        res.status(401).send('Unauthorized user.')
+        next();  //Error, trying to access unauthorized page!
     }
- }
+}
 
-stock.get('/:symbol', checkSignIn, async(req, res, next) => {
+stock.get('/:symbol', checkSignIn, async (req, res, next) => {
     let symbol = req.params.symbol;
     try {
-        let {data} = await axios.get(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${api_key}`);
+        let { data } = await axios.get(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${api_key}`);
         if (data[`Error Message`]) res.status(400).send('Invalid Symbol.');
         else
             res.status(200).json(data);
-    }catch(err) {
+    } catch (err) {
         res.status(400).send(err);
     }
 })

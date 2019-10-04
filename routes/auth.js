@@ -22,8 +22,8 @@ auth.post('/login', async (req, res, next) => {
         const user = await User.findOne({ where: { email: req.body.email } });
         if (user) {
             if (bcrypt.compareSync(req.body.password, user.password)) {
-                let payload = { id: user.id };
-                let token = jwt.sign(payload, 'stockapp');
+                let payload = { email: user.email };
+                let token = jwt.sign(payload, 'stockAPI');
                 req.session.user = user;
                 res.status(200).send({ user, token });
             } else {
