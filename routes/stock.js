@@ -2,9 +2,17 @@ const express = require('express');
 const axios = require('axios');
 const bodyParser = require('body-parser');
 const stock = express.Router();
-
 const User = require('../database/models/user')
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
 const api_key = process.env.API_KEY
+
+stock.use(cookieParser());
+stock.use(session({
+    secret: 'stockAPI',
+    resave: false,
+    saveUninitialized: true
+}));
 
 // Heavy weight data, don't use for now.
 const getSymbol = async(symbol) => {
@@ -18,7 +26,17 @@ const getSymbol = async(symbol) => {
     }
 }
 
-stock.get('/:symbol', async(req, res, next) => {
+function checkSignIn(req, res, next){
+    if(req.session.user){
+       next();     //If session exists, proceed to page
+    } else {
+       var err = new Error("Not logged in!");
+       console.log(req.session.user);
+       next(err);  //Error, trying to access unauthorized page!
+    }
+ }
+
+stock.get('/:symbol', checkSignIn, async(req, res, next) => {
     let symbol = req.params.symbol;
     try {
         let {data} = await axios.get(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${api_key}`);

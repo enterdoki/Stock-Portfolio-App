@@ -1,10 +1,8 @@
 const router = require("express").Router();
-const signinRoute = require('./signin');
-const signupRoute = require('./signup');
+const authRoute = require('./auth');
 const stockRoute = require('./stock');
 
-router.use('/signin', signinRoute);
-router.use('/signup', signupRoute);
+router.use('/auth', authRoute);
 router.use('/stock', stockRoute);
 
 router.use((req, res, next) => {
