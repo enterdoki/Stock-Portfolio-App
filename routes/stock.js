@@ -26,7 +26,7 @@ stock.use(session({
 //     }
 // }
 
-stock.get('search/:symbol', async (req, res, next) => {
+stock.get('/search/:symbol', async (req, res, next) => {
     let symbol = req.params.symbol;
     try {
         let { data } = await axios.get(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${api_key}`);
