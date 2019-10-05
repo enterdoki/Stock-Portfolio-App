@@ -9,7 +9,7 @@ user.get('/:email', async(req, res, next) => {
     try {
         const data = await User.findOne({ where: { email: req.params.email }, attributes: {exclude: ['password']} });
         if(data) {
-            res.status(200).send(data);
+            res.status(200).json(data);
         } else {
             res.status(400).send('User not found.')
         }
