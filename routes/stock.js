@@ -7,7 +7,7 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 
 let keys = ['3GLM456MLJ6RR4YR', '8SRTF305HEDKTYIE', '0KY0RSX3HXLPVO5X', 'J9MWKRGPKMV170R6', '032XX2KJDFX0LRHZ']
-const api_key = keys[Math.floor(Math.random()*keys.length)];
+const api_key = keys[Math.floor(Math.random() * keys.length)];
 
 stock.use(bodyParser.json());
 stock.use(cookieParser());
@@ -52,45 +52,65 @@ stock.get('/search/:symbol/data', async (req, res, next) => {
 })
 
 // Find all stocks owned by user
-stock.get('/:id', async(req, res, next) => {
+stock.get('/:id', async (req, res, next) => {
     try {
-       const data = await User.findOne({
-           where: {id: req.params.id}, include: [{model:Stock}]
-       })
-       if(data) {
-           res.status(200).json(data);
-       }
-    } catch(err) {
+        const data = await User.findOne({
+            where: { id: req.params.id }, include: [{ model: Stock }]
+        })
+        if (data) {
+            res.status(200).json(data);
+        }
+    } catch (err) {
         console.log(err);
     }
 })
 
 
-stock.post('/:id/buy', async(req, res, next) => {
+stock.post('/:id/buy', async (req, res, next) => {
     try {
-        await Stock.create({
-            symbol: req.body.symbol,
-            price: req.body.price,
-            quantity: req.body.quantity,
-            purchaseDate: Date.now(),
-            userId: req.params.id
-        });
-        res.status(201).send('Bought stock.');
-    } catch(err) {
+        const data = await Stock.findOne({
+            where: { userId: req.params.id, symbol: req.body.symbol }
+        })
+        if (data) {
+            let newQuantity = data.quantity + req.body.quantity;
+            let newPrice = data.price + req.body.price
+            await Stock.update({quantity: newQuantity, price: newPrice}, {where : {id : data.id}});
+            res.status(200).send("Updated stock.")
+        }
+        else {
+            await Stock.create({
+                symbol: req.body.symbol,
+                price: req.body.price,
+                quantity: req.body.quantity,
+                purchaseDate: Date.now(),
+                userId: req.params.id
+            });
+            res.status(201).send('Bought stock.');
+        }
+    } catch (err) {
         console.log(err);
     }
 })
 
-stock.post('/:id/sell/:symbol/:share', async(req, res, next) => {
+stock.post('/:id/sell', async (req, res, next) => {
     try {
-        await Stock.destroy({
-            where:{userId:req.params.id, symbol:req.params.symbol, quantity:req.params.share}
-        });
-        res.status(201).send('Sold stock.');
-    } catch(err) {
+        const data = await Stock.findOne({
+            where: { userId: req.params.id, symbol: req.body.symbol }
+        })
+        if(data.quantity < req.body.quantity) {
+            res.status(400).send('Not enough shares.');
+        }
+        else {
+            let newQuantity = data.quantity - req.body.quantity;
+            let newPrice = data.price - req.body.price;
+            await Stock.update({quantity: newQuantity, price: newPrice}, {where : {id : data.id}});
+            res.status(201).send('Sold stock.');
+        }
+        
+    } catch (err) {
         console.log(err);
     }
-    
+
 })
 
 module.exports = stock;
