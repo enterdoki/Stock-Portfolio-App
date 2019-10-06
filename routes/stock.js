@@ -73,7 +73,7 @@ stock.post('/:id/buy', async (req, res, next) => {
         })
         if (data) {
             let newQuantity = (data.quantity - 0) + (req.body.quantity - 0);
-            let newPrice = (data.price - 0) + (req.body.price - 0)
+            let newPrice = (data.price - 0) + ((req.body.price * req.body.quantity) -0)
             await Stock.update({quantity: newQuantity, price: newPrice}, {where : {id : data.id}});
             res.status(200).send("Updated stock.")
         }
@@ -102,9 +102,16 @@ stock.post('/:id/sell', async (req, res, next) => {
         }
         else {
             let newQuantity = (data.quantity - 0) - (req.body.quantity - 0);
-            let newPrice = (data.price - 0) - (req.body.price - 0)
-            await Stock.update({quantity: newQuantity, price: newPrice}, {where : {id : data.id}});
-            res.status(201).send('Sold stock.');
+            let newPrice = (data.price - 0) - ((req.body.price * req.body.quantity) -0)
+            if(newQuantity === 0) {
+                Stock.destroy({where:{id:data.id}});
+                res.status(200).send('Sold stock');
+            }
+            else {
+                await Stock.update({quantity: newQuantity, price: newPrice}, {where : {id : data.id}});
+                res.status(200).send('Sold stock.');
+            }
+            
         }
         
     } catch (err) {
