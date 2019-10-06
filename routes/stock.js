@@ -5,7 +5,9 @@ const stock = express.Router();
 const { User, Stock } = require("../database/models");
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
-const api_key = process.env.API_KEY
+
+let keys = ['3GLM456MLJ6RR4YR', '8SRTF305HEDKTYIE', '0KY0RSX3HXLPVO5X', 'J9MWKRGPKMV170R6', '032XX2KJDFX0LRHZ']
+const api_key = keys[Math.floor(Math.random()*keys.length)];
 
 stock.use(bodyParser.json());
 stock.use(cookieParser());
@@ -41,8 +43,9 @@ stock.get('/search/:symbol', async (req, res, next) => {
 stock.get('/search/:symbol/data', async (req, res, next) => {
     let symbol = req.params.symbol;
     try {
-        let data = await getSymbol(symbol);
-        res.status(200).json(data);
+        let { data } = await axios.get(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&outputsize=compact&apikey=${api_key}`);
+        if (data[`Error Message`]) return 'Invalid Symbol.';
+        else res.status(200).json(data['Time Series (Daily)']);
     } catch (err) {
         res.status(400).send(err);
     }
@@ -65,7 +68,7 @@ stock.get('/:id', async(req, res, next) => {
 
 stock.post('/:id/buy', async(req, res, next) => {
     try {
-        const share = await Stock.create({
+        await Stock.create({
             symbol: req.body.symbol,
             price: req.body.price,
             quantity: req.body.quantity,
@@ -77,17 +80,5 @@ stock.post('/:id/buy', async(req, res, next) => {
         console.log(err);
     }
 })
-
-// Heavy weight data, don't use for now.
-const getSymbol = async (symbol) => {
-    try {
-        let { data } = await axios.get(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&outputsize=compact&apikey=${api_key}`);
-        if (data[`Error Message`]) return 'Invalid Symbol.';
-        else
-            return data['Time Series (Daily)'];
-    } catch (err) {
-        return err;
-    }
-}
 
 module.exports = stock;
