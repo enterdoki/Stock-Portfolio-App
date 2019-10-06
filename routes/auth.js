@@ -56,7 +56,7 @@ auth.post('/register',
                     lastname: req.body.lastname,
                     email: req.body.email,
                     password: hash_password,
-                    balance: 5000
+                    balance: 5000.00
                 });
                 req.session.user = new_user;
                 res.status(201).send(new_user);

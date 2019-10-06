@@ -21,7 +21,8 @@ user.get('/:email', async(req, res, next) => {
 // Update user balance
 user.put('/:id', async(req, res, next) => {
     try {
-        await User.update({balance: req.body.newBalance}, {where : {id : req.params.id}});
+        let data = await User.update({balance: req.body.newBalance}, {where : {id : req.params.id}});
+        console.log(data);
         res.status(200).send('Updated balance.')
     } catch(err) {
         res.status(400).send(err);

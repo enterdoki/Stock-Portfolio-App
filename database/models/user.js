@@ -28,7 +28,7 @@ const User = db.define('user', {
         len: [2,20]
     },
     balance: {
-        type: Sequelize.FLOAT,
+        type: Sequelize.DECIMAL(10,2),
         allowNull: false,
         required: true
     } 

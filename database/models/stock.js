@@ -8,12 +8,12 @@ const Stock = db.define('stock', {
         required: true
     },
     price: {
-        type: Sequelize.DECIMAL(10,2),
+        type: Sequelize.FLOAT,
         allowNull: false,
         required: true
     },
     quantity : {
-        type: Sequelize.DECIMAL(10,2),
+        type: Sequelize.FLOAT,
         allowNull: false,
         required:true,
     },
