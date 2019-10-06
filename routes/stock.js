@@ -81,4 +81,6 @@ stock.post('/:id/buy', async(req, res, next) => {
     }
 })
 
+stock.post
+
 module.exports = stock;
