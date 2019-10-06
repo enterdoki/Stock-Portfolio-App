@@ -101,8 +101,8 @@ stock.post('/:id/sell', async (req, res, next) => {
             res.status(400).send('Not enough shares.');
         }
         else {
-            let newQuantity = (data.quantity - 0) + (req.body.quantity - 0);
-            let newPrice = (data.price - 0) + (req.body.price - 0)
+            let newQuantity = (data.quantity - 0) - (req.body.quantity - 0);
+            let newPrice = (data.price - 0) - (req.body.price - 0)
             await Stock.update({quantity: newQuantity, price: newPrice}, {where : {id : data.id}});
             res.status(201).send('Sold stock.');
         }
