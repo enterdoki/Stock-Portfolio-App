@@ -7,7 +7,7 @@ history.use(bodyParser.json());
 
 history.get('/:id', async(req, res, next) => {
     try {
-        const data = await History.find({ where: { userId: req.params.id }});
+        const data = await History.findAll({where:{userId: req.params.id}});
         if(data) {
             res.status(200).json(data);
         } else {

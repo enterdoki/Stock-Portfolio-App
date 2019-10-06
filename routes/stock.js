@@ -81,6 +81,16 @@ stock.post('/:id/buy', async(req, res, next) => {
     }
 })
 
-stock.post
+stock.post('/:id/sell/:symbol/:share', async(req, res, next) => {
+    try {
+        await Stock.destroy({
+            where:{userId:req.params.id, symbol:req.params.symbol, quantity:req.params.share}
+        });
+        res.status(201).send('Sold stock.');
+    } catch(err) {
+        console.log(err);
+    }
+    
+})
 
 module.exports = stock;
