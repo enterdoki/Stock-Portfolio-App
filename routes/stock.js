@@ -38,6 +38,16 @@ stock.get('/search/:symbol', async (req, res, next) => {
     }
 })
 
+stock.get('/search/:symbol/data', async (req, res, next) => {
+    let symbol = req.params.symbol;
+    try {
+        let data = await getSymbol(symbol);
+        res.status(200).json(data);
+    } catch (err) {
+        res.status(400).send(err);
+    }
+})
+
 // Find all stocks owned by user
 stock.get('/:id', async(req, res, next) => {
     try {
@@ -74,7 +84,7 @@ const getSymbol = async (symbol) => {
         let { data } = await axios.get(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&outputsize=compact&apikey=${api_key}`);
         if (data[`Error Message`]) return 'Invalid Symbol.';
         else
-            return Object.values(data['Time Series (Daily)'])[0];
+            return data['Time Series (Daily)'];
     } catch (err) {
         return err;
     }
