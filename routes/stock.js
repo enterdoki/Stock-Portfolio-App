@@ -78,7 +78,7 @@ stock.post('/:id/buy', async (req, res, next) => {
             res.status(200).send("Updated stock.")
         }
         else {
-            let newPrice = (data.price - 0) + ((req.body.price * req.body.quantity) -0)
+            let newPrice = 0 + ((req.body.price * req.body.quantity) -0)
             await Stock.create({
                 symbol: req.body.symbol,
                 price: newPrice,
