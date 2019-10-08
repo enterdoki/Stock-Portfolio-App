@@ -6,7 +6,7 @@ const { User, Stock } = require("../database/models");
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 
-let keys = ['3GLM456MLJ6RR4YR', '8SRTF305HEDKTYIE', '0KY0RSX3HXLPVO5X', 'J9MWKRGPKMV170R6', '032XX2KJDFX0LRHZ']
+let keys = ['3GLM456MLJ6RR4YR', '8SRTF305HEDKTYIE', '0KY0RSX3HXLPVO5X', 'J9MWKRGPKMV170R6', '032XX2KJDFX0LRHZ','8N7WPLACIW07E5EP','H4FKFIW9WKTLG5U4']
 const api_key = keys[Math.floor(Math.random() * keys.length)];
 
 stock.use(bodyParser.json());
@@ -16,17 +16,6 @@ stock.use(session({
     resave: false,
     saveUninitialized: true
 }));
-
-
-
-// function checkSignIn(req, res, next) {
-//     if (req.session.user) {
-//         next();     //If session exists, proceed to page
-//     } else {
-//         res.status(401).send('Unauthorized user.')
-//         next();  //Error, trying to access unauthorized page!
-//     }
-// }
 
 stock.get('/search/:symbol', async (req, res, next) => {
     let symbol = req.params.symbol;

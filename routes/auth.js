@@ -45,6 +45,10 @@ auth.post('/register',
     ], async (req, res, next) => {
 
         try {
+            let firstname = req.body.firstname
+            firstname = firstname[0].toUpperCase() + firstname.substr(1)
+            let lastname = req.body.lastname
+            lastname = lastname[0].toUpperCase() + lastname.substr(1)
             const errors = validationResult(req)
             if (!errors.isEmpty()) {
                 res.status(422).json({ errors: errors.array() })
@@ -52,8 +56,8 @@ auth.post('/register',
             else {
                 let hash_password = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(8));
                 let new_user = await User.create({
-                    firstname: req.body.firstname,
-                    lastname: req.body.lastname,
+                    firstname: firstname,
+                    lastname: lastname,
                     email: req.body.email,
                     password: hash_password,
                     balance: 5000.00
