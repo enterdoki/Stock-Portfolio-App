@@ -14,9 +14,9 @@ app.get('/', (req, res, next) => {
 })
 
 // sync model schema with cloud db
-// db.sync({
-//     force:true
-// })
+db.sync({
+    force:false,
+})
 
 if(db) {
     app.listen(port, () => {
