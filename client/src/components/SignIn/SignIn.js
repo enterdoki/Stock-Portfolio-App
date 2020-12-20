@@ -70,7 +70,7 @@ class SignIn extends React.Component {
                 email: this.state.email.toLowerCase(),
                 password: this.state.password
             }
-            let res = await axios.post('https://stockportfolio-api.herokuapp.com/auth/login', credentials);
+            let res = await axios.post('/api/auth/login', credentials);
             if (res) {
                 const token = res['data']['token']
                 const id = res['data']['user'].id
