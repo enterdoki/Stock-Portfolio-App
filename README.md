@@ -1,1 +1,1 @@
-# API for Stock Portfolio App
+# Stock Portfolio App

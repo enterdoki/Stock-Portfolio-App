@@ -1,30 +1,27 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 const app = express();
-const db = require('./database/db');
+const logger = require('morgan');
 const router = require('./routes/index');
+const path = require('path');
 
+app.use(logger('dev'));
 app.use(cors());
-app.use('/', router);
+app.use('/api', router);
 
-app.get('/', (req, res, next) => {
-    res.status(200).send("Default API route.");
+app.use(express.static(__dirname + '/client/build'));
+
+app.get('/*', (req, res, next) => {
+    res.sendFile(path.join(__dirname, '/client/build/index.html'))
+});
+
+app.listen(port, () => {
+    console.log(`Database connected. Sever listening on port: ${port}`);
 })
 
-// sync model schema with cloud db
-db.sync({
-    force:false,
-})
 
-if(db) {
-    app.listen(port, () => {
-        console.log(`Database connected. Sever listening on port: ${port}`); 
-    })
-} else {
-    console.log('Database not connected.');
-}
 
 
 
